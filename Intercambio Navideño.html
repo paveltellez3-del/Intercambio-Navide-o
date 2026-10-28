@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<title>Intercambio Navideño</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#fff7ee;--card:#ffffff;--tx:#2b1a1a;--mut:#7a5c5c;--red:#c0392b;--grn:#1e6b46;--gold:#d4a017;--bd:#f0d9c4;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#13261c;--card:#1d3628;--tx:#fdf3e7;--mut:#b9cdbf;--red:#e8604f;--grn:#5fcf94;--gold:#f2c94c;--bd:#2f5340}}
+:root[data-theme="dark"]{--bg:#13261c;--card:#1d3628;--tx:#fdf3e7;--mut:#b9cdbf;--red:#e8604f;--grn:#5fcf94;--gold:#f2c94c;--bd:#2f5340}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:Georgia,'Trebuchet MS',serif;min-height:100vh;overflow-x:hidden}
+.snow{position:fixed;inset:0;pointer-events:none;z-index:0}
+.snow i{position:absolute;top:-10px;color:#fff;opacity:.8;animation:f linear infinite;text-shadow:0 0 3px #9bb}
+@keyframes f{to{transform:translateY(110vh) rotate(360deg)}}
+main{position:relative;z-index:1;max-width:520px;margin:0 auto;padding:20px 16px 40px}
+h1{text-align:center;margin:8px 0 4px;font-size:1.9rem;color:var(--red)}
+.sub{text-align:center;color:var(--mut);margin:0 0 20px}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:18px;padding:18px;margin-bottom:16px;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;cursor:pointer}
+.nm{padding:14px 8px;border-radius:14px;border:2px solid var(--grn);background:transparent;color:var(--tx);font-size:1.05rem}
+.nm:active{transform:scale(.97)}
+.big{width:100%;padding:16px;border:0;border-radius:14px;background:var(--red);color:#fff;font-size:1.2rem;font-weight:bold}
+.link{background:none;border:0;color:var(--mut);text-decoration:underline;margin-top:12px;width:100%}
+.reveal{text-align:center}
+.who{font-size:2.2rem;color:var(--grn);font-weight:bold;margin:10px 0;animation:pop .6s}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.mut{color:var(--mut)}
+.row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--bd)}
+.row:last-child{border:0}
+.ok{color:var(--grn);font-weight:bold}
+.bar{height:10px;background:var(--bd);border-radius:6px;overflow:hidden;margin:8px 0 12px}
+.bar b{display:block;height:100%;background:linear-gradient(90deg,var(--grn),var(--red));width:0;transition:width .5s}
+.hide{display:none}
+</style></head><body>
+<div class="snow" id="snow"></div>
+<main>
+<h1>🎄 Intercambio Navideño 🎁</h1>
+<p class="sub">Descubre a quién le toca regalarle</p>
+<section id="v-pick" class="card"><b>¿Quién eres?</b><p class="mut" style="margin:6px 0 12px">Elige tu nombre:</p><div class="grid" id="grid"></div></section>
+<section id="v-conf" class="card hide reveal"><p class="mut">Vas a revelar el nombre de…</p><div class="who" style="color:var(--tx)" id="me"></div><p class="mut" style="margin-bottom:8px">Escribe tu PIN de 4 dígitos 🔒</p><input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" style="width:140px;text-align:center;font-size:1.6rem;letter-spacing:.3em;padding:8px;border-radius:12px;border:2px solid var(--bd);background:var(--bg);color:var(--tx);margin-bottom:8px"><p id="err" class="hide" style="color:var(--red);margin:4px 0 10px">PIN incorrecto, intenta de nuevo</p><p class="mut">¡Que nadie más vea tu pantalla! 🤫</p><button class="big" id="go">🎁 Revelar</button><button class="link" id="back">← No soy yo</button></section>
+<section id="v-res" class="card hide reveal"><p class="mut"><span id="me2"></span>, tu regalo es para…</p><div class="who" id="to"></div><div style="font-size:2rem">🎅🎁🎄</div><p class="mut">Guarda el secreto hasta el intercambio.</p><button class="link" id="back2">Cerrar</button></section>
+<section class="card"><b>📋 ¿Quién ya reveló?</b><div class="bar"><b id="pb"></b></div><div id="list"></div><p class="mut" id="note" style="font-size:.85rem;margin:10px 0 0"></p></section>
+</main>
+<script>
+const NAMES=["Alex", "Mariana", "Eira", "Ivy", "Mónica", "María José", "Angel", "Evelin", "Iram", "Emilio", "Tavo", "Dulce", "Pavel", "Angy"], ENC="BTlRe5fO6gI+Xn+nwOc=", HASH=["8941b4d95257937ea2a1c6587780bd21a9b750701c8f610354c9be572a1a5b4e", "b044835324f3182f36505de848810d7ba62bd71481a1e57416de5c86283ecc21", "d16b4e2898a7eda23a8fe13f1017090936fb2988182e183286642ba41c802074", "130cfc980799e53872efd03abf6c7c86345733667300d654e3ef87f86bc2c285", "cf3c158a74fd921becd72aa342d0a45c4d1054fc74f26a09acfe700076320cb2", "6a876cf7308e8676ae23a2cf34293a2908e920497ac87d3ea2fd85ec41fa77be", "ed3af9fbbc7039df28504c1532db1f7d0c63b50fee4c858e484a9db877411257", "46c0d997491a366cdee957a049c6af19f388532a386e8dd42382df631c150b71", "ab06f03390d5f859dea409e85ea867378f0a68de4870d61107a1b9e62659fcf9", "389fd777b5a4f64261cd1b7b627c5c0e96f43826c441571310aa38b82284dd95", "3caba274cae927b5765f4c55c54d989ccc9576c3bcd4869182049223a350e145", "a8b8410daa48fd794c687f31348f130edea3a41f0b268b134b8aeff010fd064a", "9b23a13e4b53ef2bcd6c958844a0ff67ea26b5b29e28cf7929dae332d41ae847", "b1fd9aaf1e115a867d87f04ebe4caa3dc4e5e48da5da57e3994c8a8a02504a1a"];
+const ASSIGN=(()=>{const b=atob(ENC);return NAMES.map((_,i)=>NAMES[((b.charCodeAt(i))^((i*37+11)%256))-1])})();
+const $=id=>document.getElementById(id);
+const done=new Set();let cur=-1,col=null,local=new Set();
+try{JSON.parse(localStorage.getItem('rev2')||'[]').forEach(i=>local.add(i))}catch(e){}
+for(let i=0;i<30;i++){const s=document.createElement('i');s.textContent='❄';s.style.left=Math.random()*100+'%';s.style.fontSize=(10+Math.random()*14)+'px';s.style.animationDuration=(8+Math.random()*10)+'s';s.style.animationDelay=(-Math.random()*15)+'s';$('snow').appendChild(s)}
+NAMES.forEach((n,i)=>{const b=document.createElement('button');b.className='nm';b.textContent=n;b.onclick=()=>{cur=i;$('me').textContent=n;$('pin').value='';$('err').classList.add('hide');show('v-conf')};$('grid').appendChild(b)});
+function show(id){['v-pick','v-conf','v-res'].forEach(x=>$(x).classList.toggle('hide',x!==id))}
+function render(){const all=new Set([...done,...local]);
+$('list').innerHTML='';NAMES.forEach((n,i)=>{const r=document.createElement('div');r.className='row';const a=document.createElement('span');a.textContent=n;const b=document.createElement('span');b.textContent=all.has(i)?'✅ Ya reveló':'⏳ Pendiente';if(all.has(i))b.className='ok';else b.className='mut';r.append(a,b);$('list').appendChild(r)});
+$('pb').style.width=(all.size/NAMES.length*100)+'%';
+$('note').textContent=all.size===NAMES.length?'🎉 ¡Todos ya revelaron! Listo para el intercambio.':all.size+' de '+NAMES.length+' han revelado.'}
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+$('go').onclick=async()=>{const i=cur;
+if(await sha(NAMES[i]+':'+$('pin').value.trim())!==HASH[i]){$('err').classList.remove('hide');return}
+$('pin').value='';$('me2').textContent=NAMES[i];$('to').textContent=ASSIGN[i];show('v-res');
+local.add(i);try{localStorage.setItem('rev2',JSON.stringify([...local]))}catch(e){}
+render();
+if(col){try{await col.doc('p'+i).set({name:NAMES[i],at:Date.now()})}catch(e){console.error(e)}}};
+$('back').onclick=()=>show('v-pick');
+$('back2').onclick=()=>{$('to').textContent='';show('v-pick')};
+render();
+(async()=>{try{const db=await claude.use('db');if(!db)return;col=db.collection('reveals');
+col.onSnapshot(s=>{done.clear();s.docs.forEach(d=>{const k=parseInt(d.id.slice(1));if(!isNaN(k))done.add(k)});render()},e=>console.error(e))}catch(e){console.error(e)}})();
+</script></body></html>
